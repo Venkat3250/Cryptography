@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+#define SIZE 3 // Size of the key matrix
+
+void encrypt(char message[], int key[][SIZE]) {
+    int len = strlen(message);
+
+    while (len % SIZE != 0) {
+        message[len] = 'X';
+        len++;
+    }
+    message[len] = '\0';
+
+    int encrypted[len];
+    for (int i = 0; i < len; i += SIZE) {
+        for (int j = 0; j < SIZE; j++) {
+            encrypted[i + j] = 0;
+            for (int k = 0; k < SIZE; k++) {
+                encrypted[i + j] += key[j][k] * (message[i + k] - 'A');
+            }
+            encrypted[i + j] %= 26;
+        }
+    }
+
+    for (int i = 0; i < len; i++) {
+        message[i] = encrypted[i] + 'A';
+    }
+}
+
+int main() {
+    char message[100];
+    int key[SIZE][SIZE] = {
+        {6, 24, 1},
+        {13, 16, 10},
+        {20, 17, 15}
+    };
+
+    printf("Enter the message (in uppercase letters): ");
+    scanf("%s", message);
+
+    encrypt(message, key);
+    printf("Encrypted message: %s\n", message);
+
+    return 0;
+}
